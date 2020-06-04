@@ -92,7 +92,6 @@ VECTOR2 Pstart(int stage_num)
 	}
 	//return VECTOR2();
 }
-
 VECTOR2 Sstart(int stage_num)
 {
 	switch (stage_num)
