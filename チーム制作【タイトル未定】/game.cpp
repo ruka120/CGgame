@@ -10,8 +10,6 @@ using namespace GameLib;
 using namespace input;
 
 int game_state;    // 状態
-int game_timer;    // タイマー
-int game_score;
 extern int nextScene;
 extern float fadeOut;
 extern Sprite* sprData[Spr_Max];
@@ -27,7 +25,6 @@ void game_init()
 {
 	stage_init();
     game_state = 0;
-    game_timer = 0;
 	fadeOut = 0;
 	EFFECT::init();
 	player_init();
@@ -58,13 +55,11 @@ void game_update()
          }
          break;
     }
-    if (game_state == game_max) 
+    if (game_state >= game_max) 
     {
-		nextScene = SCENE::TITLE;
+		nextScene = SCENE::RESULT;
     }
-    game_timer++;
 }
-
 
 
 void game_draw()
@@ -80,11 +75,12 @@ void game_draw()
 			SCREEN_WIDTH, SCREEN_HEIGHT);
 		stage_draw();
 		player_draw();
+	EFFECT::draw();
+		
 		break;
 	case 2:
 		break;
 	}
-	EFFECT::draw();
 	if (fadeOut > 0.0f)
 	{
 		primitive::rect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, 0, 0, 1-fadeOut, 1 - fadeOut, 1-fadeOut, fadeOut);

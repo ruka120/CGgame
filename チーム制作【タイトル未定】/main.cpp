@@ -6,6 +6,7 @@
 #include "common.h"
 #include "title.h"
 #include "game.h"
+#include "result.h"
 #include "load.h"
 using namespace GameLib;
 int curScene;
@@ -14,10 +15,14 @@ int nextScene;
 
 int APIENTRY wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
 {
-    GameLib::init(L"ウサギ", 
+    GameLib::init(L"ウサギ",
         SCREEN_WIDTH, SCREEN_HEIGHT, TRUE);
+#if _DEBUG
+	ShowCursor(TRUE);
+#else
 	ShowCursor(FALSE);//カーソルを表示
-    GameLib::setBlendMode(Blender::BS_ALPHA);
+#endif  
+	GameLib::setBlendMode(Blender::BS_ALPHA);
     curScene  = SCENE::TITLE;
     nextScene = SCENE::TITLE;
     title_init();
@@ -49,6 +54,7 @@ int APIENTRY wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
                 game_init();
                 break;
 			case SCENE::RESULT:
+				result_init();
 				break;
             }
             curScene = nextScene;   
@@ -63,6 +69,7 @@ int APIENTRY wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
             game_update();
             break;
 		case SCENE::RESULT:
+			result_update();
 			break;
         }
 
@@ -75,6 +82,7 @@ int APIENTRY wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
             game_draw();
             break;
 		case SCENE::RESULT:
+			result_draw();
 			break;
         }
         GameLib::present(1, 0);
@@ -88,6 +96,7 @@ int APIENTRY wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
         game_end();
         break;
 	case SCENE::RESULT:
+		result_end();
 		break;
     }
 	audio_uninit();

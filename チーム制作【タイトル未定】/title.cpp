@@ -7,7 +7,6 @@
 using namespace GameLib;
 using namespace input;
 int title_state;      // 状態
-int title_timer;      // タイマー
 float fadeOut;        // フェイドアウト
 extern int nextScene; //シーン移行用
 extern Sprite* sprData[Spr_Max];
@@ -15,7 +14,6 @@ void title_init()
 {
 	fadeOut = 0;
     title_state = 0;
-    title_timer = 0;
 }
 
 void title_update()
@@ -40,9 +38,8 @@ void title_update()
         {  title_state++; }
         break;
     }
-    if (title_state == title_max) 
+    if (title_state >= title_max) 
     { nextScene = SCENE::GAME; }
-    title_timer++;
    }
 
 void title_draw()
