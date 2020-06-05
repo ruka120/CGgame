@@ -9,7 +9,10 @@ struct INITIAL_VALUE
 	VECTOR2 size;       //チップの大きさ
 	VECTOR2 Pstart;     //開始時のプレイヤーの立ち位置
 };
+enum STAGE_TYPE
+{
 
+};
 //ステージ
 class STAGE
 {
@@ -23,21 +26,41 @@ private:
 	int data[32][32];    //ステージデータ格納場所
 public:
 	void init(INITIAL_VALUE);
+	VECTOR2 get_pos(int numX, int numY);
+	VECTOR2 get_size();
 	VECTOR2 Pstart();
 	VECTOR2 Sstart();
 	VECTOR2 Send();
 	void draw();
 };
-//ギミックなど
-class GIMIMICK  
-{
-
-};
 void stage_init();
 void stage_update();
 void stage_draw();
-VECTOR2 Pstart(int stage_num);
-VECTOR2 Sstart(int stage_num);
-VECTOR2 Send(int stage_num);
-
-
+VECTOR2 Pstart();
+VECTOR2 Sstart();
+VECTOR2 Send();
+VECTOR2 get_pos(int numX,int numY);
+VECTOR2 get_size();
+//ギミックなど
+struct GIMMICK_DATA
+{
+	int type;//ギミックの種類
+	int numX;//マップチップ上の初期番号(X)
+	int numY;//マップチップ上の初期番号(Y)
+};
+enum GIMMICK_TYPE
+{
+	END = -1,//終了フラグ
+	
+};
+class GIMMICK  
+{
+public:
+	int type;
+	VECTOR2 pos;
+	void init(GIMMICK_DATA data);
+	void draw();
+};
+void gimmick_init();
+void gimmick_update();
+void gimmick_draw();

@@ -28,6 +28,7 @@ void game_init()
 	fadeOut = 0;
 	EFFECT::init();
 	player_init();
+	gimmick_init();
 }
 void game_update()
 {
@@ -75,6 +76,7 @@ void game_draw()
 			SCREEN_WIDTH, SCREEN_HEIGHT);
 		stage_draw();
 		player_draw();
+		gimmick_draw();
 	EFFECT::draw();
 		
 		break;

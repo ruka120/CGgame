@@ -61,16 +61,16 @@ namespace STATG
 #if _DEBUG
 void reset()
 {
-	player.pos = { Pstart(0).x,Pstart(0).y };
+	player.pos = Pstart();
 	player.life = 16;
 	player.move_vector = MOVE_VECTOR::Stop;
 }
 #endif
 void player_init()
 {
-	player.pos = { Pstart(0).x,Pstart(0).y };
-	STATG::start = Sstart(0);
-	STATG::end = Send(0);
+	player.pos =Pstart();
+	STATG::start = Sstart();
+	STATG::end = Send();
 	player.life = 16;
 	player.move_vector = MOVE_VECTOR::Stop;
 }
@@ -88,7 +88,20 @@ void player_update()
 	 
 	}
 	debug::setString("life::%d", player.life);
-	if (player.move_vector) { player.move(64, 60); }
+	if (player.move_vector) 
+	{
+		switch (player.move_vector)
+		{
+		case MOVE_VECTOR::Left:
+		case MOVE_VECTOR::Right:
+			player.move(get_size().x, 60);
+			break;
+		case MOVE_VECTOR::Up:
+		case MOVE_VECTOR::Down:
+			player.move(get_size().y, 60);
+			break;
+		}
+	}
 #if _DEBUG
 	//à⁄ìÆâÒêîÇÃÉäÉZÉbÉg
 	if (TRG(0)&PAD_F1) { reset(); }
