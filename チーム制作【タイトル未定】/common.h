@@ -5,7 +5,13 @@
 #define ToRadian(x)     DirectX::XMConvertToRadians(x) 
 #define SCREEN_WIDTH    (1920)   // ‰æ–Ê‚Ì•
 #define SCREEN_HEIGHT   (1080)   // ‰æ–Ê‚Ì‚‚³
-
+struct Rect
+{
+	float top;
+	float under;
+	float left;
+	float right;
+};
 enum SCENE
 {
 	TITLE=0,

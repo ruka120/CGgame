@@ -5,6 +5,7 @@
 #include "./GameLib/input_manager.h"
 #include "./GameLib/obj2d_data.h"
 using namespace GameLib;
+#include "common.h"
 #include "add_on.h"
 
 
@@ -187,7 +188,7 @@ sprite_render
 }
 
 //“–‚½‚è”»’èƒNƒ‰ƒX//
-#if(judge)
+
 bool JUDGE::rect(float px_a, float py_a, int sx_a, int sy_a, float px_b, float py_b, int sx_b, int sy_b)
 {
 	bool jflg[2];
@@ -206,51 +207,50 @@ bool JUDGE::rect(float px_a, float py_a, int sx_a, int sy_a, float px_b, float p
 bool JUDGE::rect(Rect a, Rect b)
 {
 	
-	if (a.right  <  b.left)   return false;
-	if (a.left   >  b.right)  return false;
-	if (a.under  <  b.top)    return false;
-	if (a.top    >  b.under)  return false;
+	if (a.right  <   b.left)  return false;
+	if (a.left   >= b.right)  return false;
+	if (a.under  <   b.top)   return false;
+	if (a.top    >= b.under)  return false;
 	return true;
 }
-
-#else 
+ 
 bool JUDGE::rect(float top, float under, float left, float right, float posx, float posy)
 {
-	if (top > posy)    return false;
+	if (top   > posy)  return false;
 	if (under < posy)  return false;
-	if (left > posx)   return false;
+	if (left  > posx)  return false;
 	if (right < posx)  return false;
 	return true;
 }
 
 bool JUDGE::rect(float top, float under, float left, float right, VECTOR2 pos)
 {
-	if (top > pos.y)    return false;
+	if (top   > pos.y)  return false;
 	if (under < pos.y)  return false;
-	if (left > pos.x)   return false;
+	if (left  > pos.x)  return false;
 	if (right < pos.x)  return false;
 	return true;
 }
 
 bool JUDGE::rect(Rect rect, VECTOR2 pos)
 {
-	if (rect.top > pos.y)    return false;
+	if (rect.top   > pos.y)  return false;
 	if (rect.under < pos.y)  return false;
-	if (rect.left > pos.x)   return false;
+	if (rect.left  > pos.x)  return false;
 	if (rect.right < pos.x)  return false;
 	return true;
 }
 
 bool JUDGE::rect(Rect rect, float posx, float posy)
 {
-	if (rect.top > posy)	      return false;
+	if (rect.top   > posy)	return false;
 	if (rect.under < posy)  return false;
-	if (rect.left > posx)     return false;
-	if (rect.right < posx)    return false;
+	if (rect.left  > posx)  return false;
+	if (rect.right < posx)  return false;
 	return true;
 }
 
-#endif
+
 bool JUDGE::circle(float px_a, float py_a, int r_a, float px_b, float py_b, int r_b)
 {
 	float xa_b = ((px_a - px_b)*(px_a - px_b));
@@ -304,6 +304,6 @@ bool JUDGE::laser(int xory, float biginpos, float finpos, float judgepos, float 
 		else return false;
 		break;
 	}
-
+	return false;
 }
 

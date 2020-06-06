@@ -4,8 +4,9 @@
 #include "./GameLib/input_manager.h"
 #include "./GameLib/obj2d_data.h"
 using namespace GameLib;
-#include "stage.h"
 #include "common.h"
+#include "add_on.h"
+#include "stage.h"
 /********************************************************************/
 /***************************ステージ*********************************/
 /********************************************************************/
@@ -33,9 +34,7 @@ void STAGE::init(INITIAL_VALUE value)
 	fclose(fp);
 
 }
-//指定されたチップ番号の座標を返す関数
-//int numX -> マップチップのX番号
-//int numY -> マップチップのY番号
+
 VECTOR2 STAGE::get_pos(int numX, int numY)
 {
 	return VECTOR2{ start.x +(size.x*numX),start.y + (size.y*numY) };
@@ -44,6 +43,11 @@ VECTOR2 STAGE::get_pos(int numX, int numY)
 VECTOR2 STAGE::get_size()
 {
 	return size;
+}
+
+int STAGE::get_type(int numX, int numY)
+{
+	return data[numX][numY];
 }
 
 VECTOR2 STAGE::Pstart()
@@ -74,14 +78,32 @@ void STAGE::draw()
 		}
 	}
 }
+CHIP_NUM STAGE::get_nowCnum(VECTOR2 pos)
+{
+	static Rect Crect;
+	for (int y = 0; y < useY; y++)
+	{
+		for (int x = 0; x < useX; x++)
+		{
+			Crect = { (start.y + (size.y*y)),(start.y + (size.y*(y + 1))),(start.x + (size.x*x)),(start.x + (size.x*(x + 1))) };
+			if (Judge.rect(Crect, pos))
+			{
+				return CHIP_NUM{x,y};
+			}
+		}
+	}
+
+	return CHIP_NUM();
+
+}
 STAGE stage;
 INITIAL_VALUE stage1=
 {
 	"DATA\\MAP\\test.txt",
 	8,
 	8,
-	VECTOR2{64,64},
-	VECTOR2{2,3},
+    {64,64},
+	{2,3},
 };
 void stage_init()
 {
@@ -108,6 +130,12 @@ void stage_draw()
 {
 	stage.draw();
 }
+//現在のマップチップ上での番号取得関数
+//Rect rect -> 現在の四隅の座標
+CHIP_NUM get_nowCnum(VECTOR2 pos)
+{
+	return stage.get_nowCnum(pos);
+}
 //プレイヤーの開始位置取得関数
 VECTOR2 Pstart()
 {
@@ -126,13 +154,21 @@ VECTOR2 Send()
 //指定されたチップ番号の座標を返す関数
 //int numX -> マップチップのX番号
 //int numY -> マップチップのY番号
-VECTOR2 get_pos(int numX,int numY)
+VECTOR2 get_Cpos(int numX,int numY)
 {
 	return stage.get_pos(numX, numY);
 }
-VECTOR2 get_size()
+
+VECTOR2 get_Csize()
 {
 	return stage.get_size();
+}
+//指定されたチップ番号の種類を返す関数
+//int numX -> マップチップのX番号
+//int numY -> マップチップのY番号
+int get_Ctype(int numX, int numY)
+{
+	return stage.get_type(numX, numY);
 }
 
 
@@ -140,8 +176,9 @@ VECTOR2 get_size()
 /********************************************************************/
 /***************************ギミック*********************************/
 /********************************************************************/
+
 #if _DEBUG
-VECTOR4 block[]//ギミックの代わり
+VECTOR4 color[]//ギミック用画像の代わり
 {
 	{1,1,1,1},//白
 	{0,0,0,1},//黒
@@ -159,21 +196,25 @@ GIMMICK_DATA test[]
 	{4,2,6},
     {-1,0,0}
 };
+
 void GIMMICK::init(GIMMICK_DATA data)
 {
 	type = data.type;
-	pos = stage.get_pos(data.numX, data.numY);
+	pos = stage.get_pos(data.first.x, data.first.y);
 }
+
 void GIMMICK::draw()
 {
 #if _DEBUG
-	primitive::rect(VECTOR2{ pos.x,pos.y }, VECTOR2{ 64,64 }, VECTOR2{ 0,0 },0, block[type]);
+	primitive::rect(VECTOR2{ pos.x,pos.y }, VECTOR2{ 64,64 }, VECTOR2{ 0,0 },0, color[type]);
 #endif // _DEBUG
 
 }
-static const int gimmick_max=8;//ギミックの最大数
-GIMMICK gimmick[gimmick_max];
+
+static const int gimmick_max=8;//使えるギミックの最大数
 int use_gimmick_num;//実際に使うギミックの個数
+GIMMICK gimmick[gimmick_max];
+
 void gimmick_init()
 {
 	use_gimmick_num = 0;

@@ -1,13 +1,13 @@
 #pragma once
 
 //構造体
-struct Rect
-{
-	float top;
-	float under;
-	float left;
-	float right;
-};
+//struct Rect
+//{
+//	float top;
+//	float under;
+//	float left;
+//	float right;
+//};
 
 //クラス
 class Chip
@@ -31,7 +31,7 @@ protected:
 	int Previous_state;
 	//アニメーション情報関連
 	int animetimer;
-	Chip chip[3];
+	Chip chip[2];
 	bool timer_init(int STATE);
 	//int switching_time;
 	//一時停止フラグ true->stop false->play
@@ -110,12 +110,11 @@ public:
 
 
 /////当たり判定/////
-#define judge (0)
 static class JUDGE
 {
 public:
 
-#if(judge)
+
 	//当たり判定代入用の変数
 	//矩形の当たり判定
 	//float px_a,float py_a ->当たり判定を行う2つのオブジェクトの1つ目の左上の座標(X,Y)
@@ -125,7 +124,6 @@ public:
 	bool rect(float px_a, float py_a, int sx_a, int sy_a,
 		float px_b, float py_b, int sx_b, int sy_b);
 	bool rect(Rect a, Rect b);
-#else
 	////矩形の当たり判定
 	//当たり判定を行う矩形の四点の座標(top,under,left,right)又はRECT構造体
 	//当たり判定を行う座標(x,y)又はVECTOR2(pos)
@@ -133,7 +131,7 @@ public:
 	bool rect(float top, float under, float left, float right, VECTOR2 pos);
 	bool rect(Rect rect, VECTOR2 pos);
 	bool rect(Rect rect, float posx, float posy);
-#endif
+
 	//円の当たり判定
 	//float px_a,folat py_a->当たり判定を行う2つのオブジェクトの1つ目の中心座標(X,Y)又はVECTOR2(pos)
 	//int r_a-> 当たり判定を行う2つのオブジェクトの1つ目の半径
