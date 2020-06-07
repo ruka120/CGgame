@@ -8,7 +8,7 @@
 using namespace GameLib;
 extern Sprite* sprData[Spr_Max];
 //エフェクト関連
-bool isPause;//一時停止フラグ
+bool isPause;
 struct EFFECT_DATA//データ構造体
 {
 //初期化必要

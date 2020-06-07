@@ -21,14 +21,14 @@ struct INITIAL_VALUE
 };
 enum STAGE_TYPE
 {
-	Ground=0,//地面
+	Ground = 0,//地面
 	Wall,    //壁
 };
 
 class STAGE
 {
 private:
-	static const int X=5;//画像データの横の数(改行用)
+	static const int X = 5;//画像データの横の数(改行用)
 	int useX;            //使うチップの横の数
 	int useY;            //使うチップの縦の数
 	VECTOR2 size;        //チップの大きさ
@@ -53,7 +53,7 @@ CHIP_NUM get_nowCnum(VECTOR2 pos);
 VECTOR2 Pstart();
 VECTOR2 Sstart();
 VECTOR2 Send();
-VECTOR2 get_Cpos(int numX,int numY);
+VECTOR2 get_Cpos(int numX, int numY);
 VECTOR2 get_Csize();
 int get_Ctype(int numX, int numY);
 /********************************************************************/
@@ -68,18 +68,32 @@ struct GIMMICK_DATA
 enum GIMMICK_TYPE
 {
 	END = -1,//終了フラグ
-	
+#if(true)//テスト用
+	White = 0,
+	Bloac,
+	Red,
+	Green,
+	Blue,
+
+#endif
 };
 
-class GIMMICK  
+class GIMMICK
 {
+private:
 	int type;
 	VECTOR2 pos;
+	VECTOR2 center;
+	bool exist;
 public:
 	void init(GIMMICK_DATA data);
+	bool hit(CHIP_NUM now_num);
+	bool get_exist() { return exist; };
+	void update();
 	void draw();
 };
 
 void gimmick_init();
 void gimmick_update();
 void gimmick_draw();
+bool G_hit(CHIP_NUM now_num);

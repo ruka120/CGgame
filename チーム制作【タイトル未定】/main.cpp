@@ -28,7 +28,7 @@ int APIENTRY wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
     title_init();
 	audio_init();
 	spr_load();
-    while (GameLib::gameLoop())
+    while (GameLib::gameLoop(true))
     {
         input::update();
 
