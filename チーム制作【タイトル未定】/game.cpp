@@ -10,6 +10,10 @@ using namespace GameLib;
 using namespace input;
 
 int game_state;    // 状態
+
+int game_score;
+int play_state;    //ポーズ画面(タイトル戻る、やり直す、ゲームを続けるの選択肢作るかな)
+
 extern int nextScene;
 extern float fadeOut;
 extern Sprite* sprData[Spr_Max];
@@ -25,6 +29,9 @@ void game_init()
 {
 	stage_init();
     game_state = 0;
+
+    play_state = 0;
+
 	fadeOut = 0;
 	EFFECT::init();
 	player_init();
@@ -40,12 +47,20 @@ void game_update()
          break;
      
      case 1:
-         if (TRG(0) & PAD_START)
+         switch (play_state)
          {
-             fadeOut = 0.0f;
-             game_state++;
-         }
+         case 0:
+             if (TRG(0) & PAD_START)
+             {
+                 fadeOut = 0.0f;
+                 game_state++;
+             }
 		 player_update();
+         break;
+
+         case 1:
+
+         }
     break;
      
      case 2:
