@@ -32,6 +32,7 @@ Sprite* sprData[Spr_Max];
 wchar_t* sprName[] =
 {
 	L"./Data/Images/bg.png",     //背景
+	L"./Data/Images/title.png",//タイトル用文字
 	L"./Data/Images/number.png", //数字
 	L"./Data/Images/number.png", //エフェクト(number.pngで仮置き)
 	L"./Data/Images/mapchip.png" //ステージ(マップチップ)

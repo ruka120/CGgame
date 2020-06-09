@@ -6,17 +6,18 @@
 #define SCREEN_WIDTH    (1920)   // 画面の幅
 #define SCREEN_HEIGHT   (1080)   // 画面の高さ
 
+
 enum SCENE
 {
 	TITLE=0,
 	GAME,
 	RESULT,
 };
-#if(false)
-#define UP    (STATE(0)&PAD_UP)
-#define DOWN  (STATE(0)&PAD_DOWN)
-#define LEFT  (STATE(0)&PAD_LEFT)
-#define RIGHT (STATE(0)&PAD_RIGHT)
+#if(true)
+#define UP    (TRG(0)&PAD_UP)
+#define DOWN  (TRG(0)&PAD_DOWN)
+#define LEFT  (TRG(0)&PAD_LEFT)
+#define RIGHT (TRG(0)&PAD_RIGHT)
 #endif
 ////ミュージック用////
 enum
@@ -28,6 +29,7 @@ enum
 enum
 {
 	Bg = 0,
+	Title,
 	Number,
 	Effect,
 	Stage,
