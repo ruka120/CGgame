@@ -112,7 +112,7 @@ void PLAYER::STATUS()
 	if (state == PLAYER_STATE::GAME_OVER)
 	{
 		debug::setString("////////////////////////");
-		debug::setString("/////  GAME  OBER  /////");
+		debug::setString("/////  GAME  OVER  /////");
 		debug::setString("////////////////////////");
 	}
 	else

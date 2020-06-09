@@ -40,16 +40,25 @@ void game_update()
     switch (game_state)
     {
      case 0:
+         game_init();
          game_state++;
          break;
      
      case 1:
-         switch (play_state)
+         player_update();
+         if (TRG(0) & SPACE)
+         {
+             play_state = 1;
+         }
+         if (TRG(0) & PAD_START)
+         {
+             game_state = 2;
+         }
+         /*switch (play_state)
          {
          case 0:
-             if (TRG(0) & PAD_START)
+             if (TRG(0) & SPACE)
              {
-                 fadeOut = 0.0f;
                  play_state = 1;
              }
              player_update();
@@ -72,16 +81,23 @@ void game_update()
                      pose_select = 0;
                  }
              }
-             if (TRG(0) & PAD_TRG3)
+             if (TRG(0) & PAD_START)
              {
                  switch (pose_select)
                  {
-                 case 0:
+                 case 1:
+                     pose_select = 0;
+                     game_state = 2;
+                     break;
 
+                 case 2:
+                     pose_select = 0;
+                     play_state = 0;
+                     break;
                  }
-             }
+             }*/
              break;
-         }
+         
      case 2:
          fadeOut += 0.0167f;
          if (fadeOut >= 1.0f)
@@ -112,7 +128,11 @@ void game_draw()
 		player_draw();
 		gimmick_draw();
 	EFFECT::draw();
-		
+    if (play_state == 1)
+    {
+        sprite_render(sprData[Pose], 0, 0, 1, 1, 0, 0, 960, 540, 480, 270);
+    }
+
 		break;
 	case 2:
 		break;

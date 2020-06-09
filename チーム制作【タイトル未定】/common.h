@@ -32,6 +32,7 @@ enum
 	Title,
 	Number,
 	Effect,
+    Pose,
 	Stage,
 	Spr_Max
 };
