@@ -177,25 +177,26 @@ int get_Ctype(int numX, int numY)
 /***************************ギミック*********************************/
 /********************************************************************/
 
-#if _DEBUG
+#if GIMMICK_TEST
 VECTOR4 color[]//ギミック用画像の代わり
 {
+	{0,0,0,0},//何もない
 	{1,1,1,1},//白
 	{0,0,0,1},//黒
 	{1,0,0,1},//赤
 	{0,1,0,1},//緑
 	{0,0,1,1},//青
 };
-#endif
 GIMMICK_DATA test[]
 = {
-	{0,0,0},
-	{1,2,0},
-	{2,5,3},
-	{3,7,6},
-	{4,2,6},
+	{1,0,0},
+	{2,2,0},
+	{3,5,3},
+	{4,7,6},
+	{5,2,6},
 	{-1,0,0}
 };
+#endif
 
 void GIMMICK::init(GIMMICK_DATA data)
 {
@@ -225,7 +226,7 @@ void GIMMICK::update()
 	{
 	default:
 		return;
-#if(true)//テスト用
+#if(GIMMICK_TEST)//テスト用
 	case GIMMICK_TYPE::White:
 
 		break;
@@ -247,7 +248,7 @@ void GIMMICK::update()
 
 void GIMMICK::draw()
 {
-#if _DEBUG
+#if (GIMMICK_TEST)
 	primitive::rect(VECTOR2{ pos.x,pos.y }, VECTOR2{ 64,64 }, VECTOR2{ 0,0 }, 0, color[type]);
 #endif // _DEBUG
 
@@ -289,13 +290,29 @@ void gimmick_draw()
 
 
 // ギミックと当たったかの判定
-// CHIP_NUM comparison ->　現在のマップチップ上の番号
-bool G_hit(CHIP_NUM now_num)
+// CHIP_NUM now_num ->　現在のマップチップ上の番号
+//　返り値　->　当たったギミックのタイプ又は０(何も当たっていない)
+//現在のとか言ってるけど使い方は
+//キー入力されたときの移動先のチップを入れて
+//移動先で当たるかどうかを見る用の関数
+int G_hit(CHIP_NUM now_num)
 {
 	for (int i = 0; i < use_gimmick_num; i++)
 	{
 		if (!gimmick[i].get_exist()) continue;//存在していないならスキップ
-		if (gimmick[i].hit(now_num))return true;
+		if (gimmick[i].hit(now_num))return gimmick[i].get_type();
 	}
-	return false;
+	return 0;//何も当たっていない
+}
+
+void G_destroy(CHIP_NUM now_num)
+{
+	for (int i = 0; i < use_gimmick_num; i++)
+	{
+		if (!gimmick[i].get_exist()) continue;//存在していないならスキップ
+		if (gimmick[i].hit(now_num))
+		{
+			gimmick[i].destroy();
+		}
+	}
 }

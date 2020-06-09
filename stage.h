@@ -59,7 +59,7 @@ int get_Ctype(int numX, int numY);
 /********************************************************************/
 /***************************ギミック*********************************/
 /********************************************************************/
-
+#define GIMMICK_TEST (true)
 struct GIMMICK_DATA
 {
 	int type;//ギミックの種類
@@ -68,8 +68,8 @@ struct GIMMICK_DATA
 enum GIMMICK_TYPE
 {
 	END = -1,//終了フラグ
-#if(true)//テスト用
-	White = 0,
+#if(GIMMICK_TEST)//テスト用
+	White = 1,
 	Bloac,
 	Red,
 	Green,
@@ -86,9 +86,11 @@ private:
 	VECTOR2 center;
 	bool exist;
 public:
+	bool hit(CHIP_NUM now_num);         //ギミックとの衝突判定関数
+	int get_type()   { return type; }   //ギミックのタイプ取得関数
+	bool get_exist() { return exist; }  //存在フラグ取得関数
+	void destroy()   { exist = false; } //ギミック破壊関数
 	void init(GIMMICK_DATA data);
-	bool hit(CHIP_NUM now_num);
-	bool get_exist() { return exist; };
 	void update();
 	void draw();
 };
@@ -96,4 +98,5 @@ public:
 void gimmick_init();
 void gimmick_update();
 void gimmick_draw();
-bool G_hit(CHIP_NUM now_num);
+int G_hit(CHIP_NUM now_num);
+void G_destroy(CHIP_NUM now_num);
