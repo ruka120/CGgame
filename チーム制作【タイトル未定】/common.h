@@ -10,6 +10,7 @@
 enum SCENE
 {
 	TITLE=0,
+    SELECT,
 	GAME,
 	RESULT,
 };
@@ -32,8 +33,10 @@ enum
 	Title,
 	Number,
 	Effect,
-    Pose,
-	Stage,
+	Pause,
+    Stage_select,
+    Cursor,
+	Mapchip,
 	Spr_Max
 };
 

@@ -61,7 +61,7 @@ void title_update()
 				break;
 			case PLAYorEXIT::PLAY:
 				fadeOut = 0.0f;
-				title_state++;//ゲームへ
+				title_state++;//ステージセレクトへ
 				break;
 			case PLAYorEXIT::EXIT:
 				std::exit(0);//正常終了
@@ -76,7 +76,7 @@ void title_update()
         break;
     }
     if (title_state >= title_max) 
-    { nextScene = SCENE::GAME; }
+    { nextScene = SCENE::SELECT; }
    }
 
 void title_draw()

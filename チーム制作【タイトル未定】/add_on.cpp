@@ -15,6 +15,13 @@ void Chip::reset()
 	y = 0;
 }
 
+void Chip::reset(const int numX, const int numY,const int max)
+{
+	count = max-1;
+	x = numX-1;
+	y = numY-1;
+}
+
 void OBJ::pause(bool isFlg)
 {
 	isPause = isFlg;
@@ -80,9 +87,9 @@ void OBJ::anim(
 		OBJ::chip[0].reset();
 	}
 	//一時停止フラグが立っていなかったら実行
-	if (!isPause)
+	if (!OBJ::isPause)
 	{
-		if (animetimer != 0 && animetimer%time == 0)
+		if (OBJ::animetimer != 0 && OBJ::animetimer%time == 0)
 		{
 			OBJ::chip[0].x++;
 			OBJ::chip[0].count++;
@@ -91,24 +98,24 @@ void OBJ::anim(
 				OBJ::chip[0].x = 0;
 				OBJ::chip[0].y++;
 			}
-			if (chip[0].y >= NumY)
+			if (OBJ::chip[0].y >= NumY)
 			{
-				chip[0].y = 0;
-			}
-			if (NumX*NumY != max && OBJ::chip[0].count > max)
-			{
-				chip[0].count = 1;
-				chip[0].x = chip[0].y = 0;
+				OBJ::chip[0].y = 0;
 			}
 		}
-	   OBJ::animetimer++;
+		if (OBJ::chip[0].count > max)
+		{
+			OBJ::animetimer = 0;
+
+		}
+		else OBJ::animetimer++;
 	}
 	sprite_render
 	(
 		data,
 		posx, posy,
 		sclx, scly,
-		dataposx + (sizex*chip[0].x), dataposy + (sizey*chip[0].y),
+		dataposx + (sizex*OBJ::chip[0].x), dataposy + (sizey*OBJ::chip[0].y),
 		sizex, sizey,
 		StandardX, StandardY,
 		rad,
@@ -151,34 +158,170 @@ void OBJ::motion(
 		{
 			OBJ::chip[1].reset();
 		}
-	if (!isPause)
-	{
-		if (animetimer != 0 && animetimer%time == 0)
+		//一時停止フラグが立っていなかったら実行
+		if (!OBJ::isPause)
 		{
-			chip[1].x++;
-			chip[1].count++;
-			if (chip[1].x >= NumX)
+			if (OBJ::animetimer != 0 && OBJ::animetimer%time == 0)
 			{
-				chip[1].x = 0;
-				chip[1].y++;
+				OBJ::chip[1].x++;
+				OBJ::chip[1].count++;
+				if (OBJ::chip[1].x >= NumX)
+				{
+					OBJ::chip[1].x = 0;
+					OBJ::chip[1].y++;
+				}
+				if (chip[1].y >= NumY)
+				{
+					OBJ::chip[1].x = NumX - 1;
+					OBJ::chip[1].y--;
+				}
 			}
-			if (chip[1].y >= NumY)
+			if (OBJ::chip[1].count > max)
 			{
-				chip[1].y = 0;
-			}
-			if (chip[1].count > max)
-			{
+				OBJ::animetimer = 0;
 				OBJ::state = after;
 			}
+			else OBJ::animetimer++;
 		}
-		OBJ::animetimer++;
-	}
 sprite_render
 	(
 		data,
 		posx, posy,
 		sclx, scly,
-		dataposx + (sizex*chip[1].x), dataposy + (sizey*chip[1].y),
+		dataposx + (sizex*OBJ::chip[1].x), dataposy + (sizey*OBJ::chip[1].y),
+		sizex, sizey,
+		StandardX, StandardY,
+		rad,
+		r, g, b, a
+	);
+}
+//画像データ
+//切り替え時間(フレーム単位)
+//横、縦のチップの個数(x,y)
+//チップの総数
+//描写位置(x,y)
+//スケール(x,y)
+//画像の開始位置(x,y)
+//1チップの大きさ(x,y)
+//基準点(x,y)
+//角度
+//色(r,g,b,a)
+void OBJ::reverse_anim(GameLib::Sprite * data, 
+	const int time, 
+	int NumX, int NumY, 
+	int max, 
+	float posx, float posy, 
+	float sclx, float scly, 
+	float dataposx, float dataposy, 
+	float sizex, float sizey, 
+	float StandardX, float StandardY, 
+	float rad, 
+	float r, float g, float b, float a)
+{
+	if (timer_init(OBJ::state))
+	{
+		OBJ::animetimer = 0;
+	}
+	if (OBJ::animetimer <= 0)
+	{
+		OBJ::chip[2].reset(NumX,NumY,max);
+	}
+	//一時停止フラグが立っていなかったら実行
+	if (!OBJ::isPause)
+	{
+		if (OBJ::animetimer != 0 && OBJ::animetimer%time == 0)
+		{
+			OBJ::chip[2].x--;
+			OBJ::chip[2].count--;
+			if (OBJ::chip[2].x < 0)
+			{
+				OBJ::chip[2].x = NumX - 1;
+				OBJ::chip[2].y--;
+			}
+			if (OBJ::chip[2].y < 0)
+			{
+				OBJ::chip[2].y = NumY - 1;
+			}
+		}
+		if (OBJ::chip[2].count > max)
+		{
+			OBJ::animetimer = 0;
+		}
+	    else OBJ::animetimer++;
+	}
+	sprite_render
+	(
+		data,
+		posx, posy,
+		sclx, scly,
+		dataposx + (sizex*OBJ::chip[2].x), dataposy + (sizey*OBJ::chip[2].y),
+		sizex, sizey,
+		StandardX, StandardY,
+		rad,
+		r, g, b, a
+	);
+}
+//画像データ
+//モーション終了後の状態
+//切り替え時間(フレーム単位)
+//横、縦のチップの個数(x,y)
+//チップの総数
+//描写位置(x,y)
+//スケール(x,y)
+//画像の開始位置(x,y)
+//1チップの大きさ(x,y)
+//基準点(x,y)
+//角度
+//色(r,g,b,a)
+void OBJ::reverse_motion(GameLib::Sprite * data, 
+	int after, 
+	const int time, 
+	int NumX, int NumY, 
+	int max,
+	float posx, float posy, 
+	float sclx, float scly,
+	float dataposx, float dataposy, float sizex, float sizey, float StandardX, float StandardY, float rad, float r, float g, float b, float a)
+{
+	//一時停止フラグが立っていなかったら実行
+		//OBJ::switching_time = time;
+	if (timer_init(OBJ::state))
+	{
+		OBJ::animetimer = 0;
+	}
+	if (OBJ::animetimer <= 0)
+	{
+		OBJ::chip[3].reset();
+	}
+	//一時停止フラグが立っていなかったら実行
+	if (!OBJ::isPause)
+	{
+		if (OBJ::animetimer != 0 && OBJ::animetimer%time == 0)
+		{
+			OBJ::chip[3].x--;
+			OBJ::chip[3].count--;
+			if (OBJ::chip[3].x < 0)
+			{
+				OBJ::chip[3].x = NumX - 1;
+				OBJ::chip[3].y--;
+			}
+			if (OBJ::chip[3].y < 0)
+			{
+				OBJ::chip[3].x = 0;
+				OBJ::chip[3].y ++;
+			}
+		}
+		if (OBJ::chip[3].count > max)
+		{
+			OBJ::state = after;
+		}
+		else OBJ::animetimer++;
+	}
+	sprite_render
+	(
+		data,
+		posx, posy,
+		sclx, scly,
+		dataposx + (sizex*OBJ::chip[3].x), dataposy + (sizey*OBJ::chip[3].y),
 		sizex, sizey,
 		StandardX, StandardY,
 		rad,
@@ -205,11 +348,11 @@ bool JUDGE::rect(float px_a, float py_a, int sx_a, int sy_a, float px_b, float p
 
 bool JUDGE::rect(Rect a, Rect b)
 {
-	
-	if (a.right  <  b.left)   return false;
-	if (a.left   >  b.right)  return false;
-	if (a.under  <  b.top)    return false;
-	if (a.top    >  b.under)  return false;
+
+	if (a.right < b.left)   return false;
+	if (a.left > b.right)  return false;
+	if (a.under < b.top)    return false;
+	if (a.top > b.under)  return false;
 	return true;
 }
 
@@ -306,4 +449,3 @@ bool JUDGE::laser(int xory, float biginpos, float finpos, float judgepos, float 
 	}
 
 }
-

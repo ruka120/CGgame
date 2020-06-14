@@ -5,7 +5,7 @@
 #include "./GameLib/obj2d_data.h"
 using namespace GameLib;
 #include "common.h"
-#include "add_on.h"
+
 #include "stage.h"
 /********************************************************************/
 /***************************ステージ*********************************/
@@ -13,12 +13,13 @@ using namespace GameLib;
 void STAGE::init(INITIAL_VALUE value)
 {
 	//変数の初期化
-	size = value.size;
 	useX = value.useX;
 	useY = value.useY;
+	size = value.size;
+	scl  = value.scl;
 	Pspawn = value.Pstart;
 	//開始位置の設定
-	start = { ((SCREEN_WIDTH / 2) - (size.x*(useX / 2))),((SCREEN_HEIGHT / 2) - (size.y*(useY / 2))) };
+	start = { ((SCREEN_WIDTH / 2) - (get_size().x*(useX / 2))),((SCREEN_HEIGHT / 2) - (get_size().y*(useY / 2))) };
 	//ステージデータ
 	FILE* fp;
 	fp = fopen(value.fname, "r");
@@ -27,7 +28,11 @@ void STAGE::init(INITIAL_VALUE value)
 	{
 		for (int x = 0; x < useX; x++)
 		{
-			fscanf(fp, "%d,", &data[y][x]);
+			fscanf(fp, "%d,", &data[y][x].type);
+			if (data[y][x].type == STAGE_TYPE::Needle)
+			{
+				data[y][x].set_state(NEEDLE_STATE::After_Out);
+			}
 		}
 		fprintf(fp, "\n");
 	}
@@ -37,23 +42,23 @@ void STAGE::init(INITIAL_VALUE value)
 
 VECTOR2 STAGE::get_pos(int numX, int numY)
 {
-	return VECTOR2{ start.x + (size.x*numX),start.y + (size.y*numY) };
+	return VECTOR2{ start.x + (get_size().x*numX),start.y + (get_size().y*numY) };
 }
 
 VECTOR2 STAGE::get_size()
 {
-	return size;
+	return VECTOR2{size.x*scl.x,size.y*scl.y};
 }
 
 int STAGE::get_type(int numX, int numY)
 {
-	return data[numX][numY];
+	return data[numY][numX].type;
 }
 
 VECTOR2 STAGE::Pstart()
 {
 	VECTOR2 pos;
-	pos = { (((SCREEN_WIDTH / 2) - (size.x*(useX / 2))) + (size.x*Pspawn.x)),(((SCREEN_HEIGHT / 2) - (size.y*(useY / 2))) + (size.y*Pspawn.y)) };
+	pos = { (((SCREEN_WIDTH / 2) - (get_size().x*(useX / 2))) + (get_size().x*Pspawn.x)),(((SCREEN_HEIGHT / 2) - (get_size().y*(useY / 2))) + (get_size().y*Pspawn.y)) };
 	return pos;
 }
 
@@ -64,7 +69,7 @@ VECTOR2 STAGE::Sstart()
 
 VECTOR2 STAGE::Send()
 {
-	return VECTOR2{ start.x + (size.x*(useX - 1)),start.y + (size.y*(useY - 1)) };
+	return VECTOR2{ start.x + (get_size().x*(useX - 1)),start.y + (get_size().y*(useY - 1)) };
 }
 
 void STAGE::draw()
@@ -74,9 +79,35 @@ void STAGE::draw()
 	{
 		for (int x = 0; x < useX; x++)
 		{
-			sprite_render(sprData[Stage], start.x + (size.x*x), start.y + (size.y*y), 1, 1, size.x*(data[y][x] % X), size.y*(data[y][x] / X), 64, 64);
+			switch (data[y][x].type)
+			{
+			default:
+			sprite_render(sprData[Mapchip], start.x + (get_size().x*x), start.y + (get_size().y*y), scl.x, scl.y, size.x*(data[y][x].type % X), size.y*(data[y][x].type / X), size.x, size.y);
+				break;
+			case STAGE_TYPE::Needle:
+				switch (data[y][x].get_state())
+				{
+				case NEEDLE_STATE::After_Out:
+					//sprite_render
+					break;
+				case NEEDLE_STATE::On_the_way_In:
+					//motion
+					break;
+				case NEEDLE_STATE::After_In:
+					//sprite_render
+					break;
+				case NEEDLE_STATE::On_the_way_Out:
+					//motion
+					break;
+				}
+				break;
+			}
 		}
 	}
+}
+void STAGE::data_translate(CHIP_NUM now_chip, int after)
+{
+	data[now_chip.y][now_chip.x].type = after;
 }
 CHIP_NUM STAGE::get_nowCnum(VECTOR2 pos)
 {
@@ -85,7 +116,7 @@ CHIP_NUM STAGE::get_nowCnum(VECTOR2 pos)
 	{
 		for (int x = 0; x < useX; x++)
 		{
-			Crect = { (start.y + (size.y*y)),(start.y + (size.y*(y + 1))),(start.x + (size.x*x)),(start.x + (size.x*(x + 1))) };
+			Crect = { (start.y + (get_size().y*y)),(start.y + (get_size().y*(y + 1))),(start.x + (get_size().x*x)),(start.x + (get_size().x*(x + 1))) };
 			if (Judge.rect(Crect, pos))
 			{
 				return CHIP_NUM{ x,y };
@@ -102,7 +133,8 @@ INITIAL_VALUE stage1 =
 	"DATA\\MAP\\test.txt",
 	8,
 	8,
-	{64,64},
+    {2,2},
+	{32,32},
 	{2,3},
 };
 void stage_init()
@@ -120,7 +152,11 @@ void stage_init()
 	}
 #endif
 }
-
+//指定されたチップのタイプを変更する関数
+void Sdata_translate(CHIP_NUM now_chip, int after)
+{
+	stage.data_translate(now_chip, after);
+}
 void stage_update()
 {
 
@@ -177,7 +213,7 @@ int get_Ctype(int numX, int numY)
 /***************************ギミック*********************************/
 /********************************************************************/
 
-#if _DEBUG
+#if GIMMICK_TEST
 VECTOR4 color[]//ギミック用画像の代わり
 {
 	{1,1,1,1},//白
@@ -186,22 +222,24 @@ VECTOR4 color[]//ギミック用画像の代わり
 	{0,1,0,1},//緑
 	{0,0,1,1},//青
 };
-#endif
 GIMMICK_DATA test[]
 = {
-	{0,0,0},
-	{1,2,0},
-	{2,5,3},
-	{3,7,6},
-	{4,2,6},
+	{GIMMICK_TYPE::White,0,0},
+	{GIMMICK_TYPE::Bloac,2,0},
+	{GIMMICK_TYPE::Red  ,5,3},
+	{GIMMICK_TYPE::Green,7,6},
+	{GIMMICK_TYPE::Blue ,2,6},
 	{-1,0,0}
 };
+#endif
 
 void GIMMICK::init(GIMMICK_DATA data)
 {
 	type   = data.type;
+	scl    = { 2,2 };
+	size   = {32,32};
 	pos    = stage.get_pos(data.first.x, data.first.y);
-	center = pos + VECTOR2{32,32};
+	center = pos + VECTOR2{ (size.x*scl.x)/2,(size.y*scl.y)/ 2 };
 	exist  = true;
 }
 
@@ -225,7 +263,7 @@ void GIMMICK::update()
 	{
 	default:
 		return;
-#if(true)//テスト用
+#if(GIMMICK_TEST)//テスト用
 	case GIMMICK_TYPE::White:
 
 		break;
@@ -247,8 +285,8 @@ void GIMMICK::update()
 
 void GIMMICK::draw()
 {
-#if _DEBUG
-	primitive::rect(VECTOR2{ pos.x,pos.y }, VECTOR2{ 64,64 }, VECTOR2{ 0,0 }, 0, color[type]);
+#if (GIMMICK_TEST)
+	primitive::rect(VECTOR2{ pos.x,pos.y }, VECTOR2{ size.x*scl.x,size.y*scl.y }, VECTOR2{ 0,0 }, 0, color[type - 2]);
 #endif // _DEBUG
 
 }
@@ -289,13 +327,31 @@ void gimmick_draw()
 
 
 // ギミックと当たったかの判定
-// CHIP_NUM comparison ->　現在のマップチップ上の番号
-bool G_hit(CHIP_NUM now_num)
+// CHIP_NUM now_num ->　現在のマップチップ上の番号
+//　返り値　->　当たったギミックのタイプ又は０(何も当たっていない)
+//現在のとか言ってるけど使い方は
+//キー入力されたときの移動先のチップを入れて
+//移動先で当たるかどうかを見る用の関数
+int G_hit(CHIP_NUM now_num)
 {
 	for (int i = 0; i < use_gimmick_num; i++)
 	{
 		if (!gimmick[i].get_exist()) continue;//存在していないならスキップ
-		if (gimmick[i].hit(now_num))return true;
+		if (gimmick[i].hit(now_num))return gimmick[i].get_type();
 	}
-	return false;
+	return 0;//何も当たっていない
 }
+
+void G_destroy(CHIP_NUM now_num)
+{
+	for (int i = 0; i < use_gimmick_num; i++)
+	{
+		if (!gimmick[i].get_exist()) continue;//存在していないならスキップ
+		if (gimmick[i].hit(now_num))
+		{
+			gimmick[i].destroy();
+		}
+	}
+}
+
+

@@ -1,0 +1,16 @@
+﻿  counter.cpp
+counter.cpp(19): warning C4458: 'count' を宣言すると、クラス メンバーが隠蔽されます
+  counter.cpp(13): note: 'COUNTER::count' の宣言を確認してください
+  effect.cpp
+  game.cpp
+  load.cpp
+  main.cpp
+  player.cpp
+player.cpp(365): warning C4305: '引数': 'double' から 'float' へ切り詰めます。
+  result.cpp
+  stage.cpp
+  stage_select.cpp
+stage_select.cpp(31): warning C4127: 条件式が定数です。
+  title.cpp
+  コードを生成中...
+  gp1.vcxproj -> C:\Users\2190232\Documents\CGgame\チーム制作【タイトル未定】\Release\GameLib.exe

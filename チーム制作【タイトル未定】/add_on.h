@@ -17,6 +17,7 @@ public:
 	int y;
 	int count;
 	void reset();
+	void reset(const int numX,const int numY, const int max);
 };
 //OBJ基底クラス
 class OBJ
@@ -31,7 +32,7 @@ protected:
 	int Previous_state;
 	//アニメーション情報関連
 	int animetimer;
-	Chip chip[3];
+	Chip chip[4];
 	bool timer_init(int STATE);
 	//int switching_time;
 	//一時停止フラグ true->stop false->play
@@ -103,12 +104,54 @@ public:
 		float StandardX = 0.0f, float StandardY = 0.0f,
 		float rad = 0.0f,
 		float r = 1.0f, float g = 1.0f, float b = 1.0f, float a = 1.0f);
+	//画像データ
+	//切り替え時間(フレーム単位)
+	//横、縦のチップの個数(x,y)
+	//チップの総数
+	//描写位置(x,y)
+	//スケール(x,y)
+	//画像の開始位置(x,y)
+	//1チップの大きさ(x,y)
+	//基準点(x,y)
+	//角度(ラジアン)
+	//色(r,g,b,a)
+	void reverse_anim(GameLib::Sprite* data,
+		const int time,
+		int NumX, int NumY,
+		int max,
+		float posx, float posy,
+		float sclx, float scly,
+		float dataposx, float dataposy,
+		float sizex, float sizey,
+		float StandardX = 0.0f, float StandardY = 0.0f,
+		float rad = 0.0f,
+		float r = 1.0f, float g = 1.0f, float b = 1.0f, float a = 1.0f);
+	//画像データ
+	//モーション終了後の状態
+	//切り替え時間(フレーム単位)
+	//横、縦のチップの個数(x,y)
+	//チップの総数
+	//描写位置(x,y)
+	//スケール(x,y)
+	//画像の開始位置(x,y)
+	//1チップの大きさ(x,y)
+	//基準点(x,y)
+	//角度(ラジアン)
+	//色(r,g,b,a)
+	void reverse_motion(GameLib::Sprite* data,
+		int after,
+		const int time,
+		int NumX, int NumY,
+		int max,
+		float posx, float posy,
+		float sclx, float scly,
+		float dataposx, float dataposy,
+		float sizex, float sizey,
+		float StandardX = 0.0f, float StandardY = 0.0f,
+		float rad = 0.0f,
+		float r = 1.0f, float g = 1.0f, float b = 1.0f, float a = 1.0f);
 #endif//アニメーション関連
 };
-
-
-
-
 /////当たり判定/////
 #define judge (0)
 static class JUDGE
@@ -149,6 +192,7 @@ public:
 	//float biginpos, float finfin ->判定の初め(bigin)と終わり(fin)の座標
 	//float judgepos, float laserwidth ->判定線(レーザーの中心線)と幅(判定線からレーザーの)
 	bool laser(int xory, float biginpos, float finpos,
-		        float judgepos, float laserwidth,
-		        VECTOR2 pos, float objwidth);
+		float judgepos, float laserwidth,
+		VECTOR2 pos, float objwidth);
 }Judge;
+

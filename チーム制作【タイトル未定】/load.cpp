@@ -35,7 +35,9 @@ wchar_t* sprName[] =
 	L"./Data/Images/title.png",//タイトル用文字
 	L"./Data/Images/number.png", //数字
 	L"./Data/Images/number.png", //エフェクト(number.pngで仮置き)
-    L"./Data/Images/pose.png", //ポーズ
+	L"./Data/Images/pause.png", //ポーズ
+    L"./Data/Images/stage_select.png", //ステージセレクト
+    L"./Data/Images/cursor.png", //カーソル
 	L"./Data/Images/mapchip.png" //ステージ(マップチップ)
 };
 void spr_load()

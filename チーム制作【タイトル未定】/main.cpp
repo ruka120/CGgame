@@ -5,6 +5,7 @@
 #include "./GameLib/obj2d_data.h"
 #include "common.h"
 #include "title.h"
+#include "stage_select.h"
 #include "game.h"
 #include "result.h"
 #include "load.h"
@@ -39,6 +40,9 @@ int APIENTRY wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
 			case SCENE::TITLE:
                 title_end();
                 break;
+            case SCENE::SELECT:
+                select_end();
+                break;
 			case SCENE::GAME:
                 game_end();
                 break;
@@ -49,6 +53,9 @@ int APIENTRY wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
             {
 			case SCENE::TITLE:
                 title_init();
+                break;
+            case SCENE::SELECT:
+                select_init();
                 break;
 			case SCENE::GAME:
                 game_init();
@@ -65,6 +72,9 @@ int APIENTRY wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
 		case SCENE::TITLE:
             title_update();
             break;
+        case SCENE::SELECT:
+            select_update();
+            break;
 		case SCENE::GAME:
             game_update();
             break;
@@ -77,6 +87,9 @@ int APIENTRY wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
         {
 		case SCENE::TITLE:
             title_draw();
+            break;
+        case SCENE::SELECT:
+            select_draw();
             break;
 		case SCENE::GAME:
             game_draw();
@@ -91,6 +104,9 @@ int APIENTRY wWinMain(HINSTANCE, HINSTANCE, LPWSTR, int)
     {
 	case SCENE::TITLE:
         title_end();
+        break;
+    case SCENE::SELECT:
+        select_end();
         break;
 	case SCENE::GAME:
         game_end();
